@@ -1,20 +1,22 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from "react";
+import { Auth } from "./screens";
+import BottomTab from "./navigation/BottomTab";
+import configureStore from "./redux/store";
+import { Provider } from "react-redux";
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+  const [authKey, setAuthKey] = useState<string | null>("SUCCESS");
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  useEffect(() => {
+    handleRenderStatus();
+  }, [authKey]);
+
+  const handleRenderStatus = () => {
+    if (authKey === "SUCCESS") {
+      return <BottomTab />;
+    } else {
+      return <Auth getAuthKey={setAuthKey} />;
+    }
+  };
+  return <Provider store={configureStore}>{handleRenderStatus()}</Provider>;
+}
